@@ -303,9 +303,6 @@ class EpubHtml(EpubItem):
         >>> add_link(href='styles.css', rel='stylesheet', type='text/css')
         """
         self.links.append(kwgs)
-        if kwgs.get('type') == 'text/javascript':
-            if 'scripted' not in self.properties:
-                self.properties.append('scripted')
 
     def get_links(self):
         """
@@ -426,7 +423,6 @@ class EpubHtml(EpubItem):
         _body = etree.SubElement(tree_root, 'body')
         if self.direction:
             _body.set('dir', self.direction)
-            tree_root.set('dir', self.direction)
 
         body = html_tree.find('body')
         if body is not None:
@@ -692,6 +688,19 @@ class EpubBook(object):
             namespace = NAMESPACES[namespace]
 
         return self.metadata[namespace].get(name, [])
+
+    def get_all_metadata_by_namespace(self, namespace):
+        "Retrieve all metadata by namespace"
+
+        if namespace in NAMESPACES:
+            namespace = NAMESPACES[namespace]
+
+        return self.metadata[namespace]
+
+    def get_all_metadata(self):
+        "Retrieve all metadata"
+
+        return self.metadata
 
     def set_unique_metadata(self, namespace, name, value, others=None):
         "Add metadata if metadata with this identifier does not already exist, otherwise update existing metadata."
